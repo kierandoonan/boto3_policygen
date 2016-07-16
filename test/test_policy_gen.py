@@ -60,3 +60,22 @@ class TestPolicyGen:
         assert 'ec2:DescribeInstances' in policy['Statement'][0]['Action']
         assert 's3:ListBuckets' in policy['Statement'][0]['Action']
         assert 'rds:DescribeDBInstances' in policy['Statement'][0]['Action']
+
+    def test_actions_in_policy_are_unique(self):
+        ec2, stub = self.gen_client_and_stub('ec2')
+
+        for i in range(10):
+            stub.add_response('describe_instances', {}, {})
+
+        stub.activate()
+
+        policy_gen = BotoPolicyGen([ec2])
+        policy_gen.record()
+
+        for i in range(10):
+            ec2.describe_instances()
+
+        policy = json.loads(policy_gen.generate())
+
+        assert len(policy['Statement'][0]['Action']) == 1
+        assert 'ec2:DescribeInstances' in policy['Statement'][0]['Action']
