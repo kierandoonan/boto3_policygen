@@ -35,4 +35,28 @@ class TestPolicyGen:
         assert 'ec2:DescribeImages' in policy['Statement'][0]['Action']
 
     def test_records_policy_from_multiple_clients(self):
-        pass
+        ec2, ec2_stub = self.gen_client_and_stub('ec2')
+        rds, rds_stub = self.gen_client_and_stub('rds')
+        s3, s3_stub = self.gen_client_and_stub('s3')
+
+        ec2_stub.add_response('describe_instances', {}, {})
+        rds_stub.add_response('describe_db_instances', {}, {})
+        s3_stub.add_response('list_buckets', {}, {})
+
+        ec2_stub.activate()
+        rds_stub.activate()
+        s3_stub.activate()
+
+        policy_gen = BotoPolicyGen([ec2, rds, s3])
+        policy_gen.record()
+
+        ec2.describe_instances()
+        rds.describe_db_instances()
+        s3.list_buckets()
+
+        policy = json.loads(policy_gen.generate())
+
+        assert len(policy['Statement'][0]['Action']) == 3
+        assert 'ec2:DescribeInstances' in policy['Statement'][0]['Action']
+        assert 's3:ListBuckets' in policy['Statement'][0]['Action']
+        assert 'rds:DescribeDBInstances' in policy['Statement'][0]['Action']
