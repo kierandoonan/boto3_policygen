@@ -1,5 +1,5 @@
-from botocore.endpoint import Endpoint
 import json
+
 
 class BotoPolicyGen:
     def __init__(self, clients=[]):
