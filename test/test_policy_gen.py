@@ -1,7 +1,7 @@
 import boto3
 import json
 from botocore.stub import Stubber
-from policy_gen.boto3 import BotoPolicyGen
+from policy_gen.iam import BotoPolicyGen
 
 
 class TestPolicyGen:
