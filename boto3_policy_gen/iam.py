@@ -1,7 +1,7 @@
 import json
 
 
-class BotoPolicyGen:
+class PolicyGenerator:
     def __init__(self, clients=[]):
         self.actions = set()
         self.clients = clients

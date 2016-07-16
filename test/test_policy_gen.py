@@ -1,7 +1,7 @@
 import boto3
 import json
 from botocore.stub import Stubber
-from policy_gen.iam import BotoPolicyGen
+from boto3_policy_gen.iam import PolicyGenerator
 
 
 class TestPolicyGen:
@@ -20,7 +20,7 @@ class TestPolicyGen:
         stub.add_response('describe_images', {}, {})
         stub.activate()
 
-        policy_gen = BotoPolicyGen([ec2])
+        policy_gen = PolicyGenerator([ec2])
         policy_gen.record()
 
         ec2.describe_instances()
@@ -47,7 +47,7 @@ class TestPolicyGen:
         rds_stub.activate()
         s3_stub.activate()
 
-        policy_gen = BotoPolicyGen([ec2, rds, s3])
+        policy_gen = PolicyGenerator([ec2, rds, s3])
         policy_gen.record()
 
         ec2.describe_instances()
@@ -69,7 +69,7 @@ class TestPolicyGen:
 
         stub.activate()
 
-        policy_gen = BotoPolicyGen([ec2])
+        policy_gen = PolicyGenerator([ec2])
         policy_gen.record()
 
         for i in range(10):
