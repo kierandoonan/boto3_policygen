@@ -27,4 +27,4 @@ class TestPolicyGen:
         assert 'Statement' in policy
         assert len(policy['Statement']) == 1
         assert len(policy['Statement'][0]['Action']) == 1
-        assert policy['Statement'][0]['Action'] == 'ec2:DescribeInstances'
+        assert policy['Statement'][0]['Action'][0] == 'ec2:DescribeInstances'
