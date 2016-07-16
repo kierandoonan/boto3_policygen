@@ -19,7 +19,7 @@ class TestPolicyGen:
         self.ec2_stubber.add_response('describe_instances', {}, {})
         self.ec2_stubber.activate()
 
-        policy_gen = BotoPolicyGen()
+        policy_gen = BotoPolicyGen([self.ec2])
         policy_gen.record()
         self.ec2.describe_instances()
         policy = json.loads(policy_gen.generate())
