@@ -3,6 +3,7 @@ from botocore.stub import Stubber
 from botocore.endpoint import Endpoint
 from botocore.model import OperationModel
 
+
 class PolicyGenerator:
 
     def __init__(self):
