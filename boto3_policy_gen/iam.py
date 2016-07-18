@@ -1,6 +1,7 @@
 import json
 from botocore.stub import Stubber
-
+from botocore.endpoint import Endpoint
+from botocore.model import OperationModel
 
 class PolicyGenerator:
 
@@ -10,6 +11,10 @@ class PolicyGenerator:
     def record(self):
         Stubber._get_response_handler = self._event_wrapper(
             Stubber._get_response_handler
+        )
+
+        Endpoint.make_request = self._event_wrapper(
+            Endpoint.make_request
         )
 
     def generate(self):
@@ -29,15 +34,18 @@ class PolicyGenerator:
     def _event_wrapper(self, method):
         def wrapper_method(*args, **kwargs):
             model = kwargs.get('model')
+
+            # If model isn't in kwargs, check for it in args
             if not model:
-                import pdb; pdb.set_trace()
+                model = next(a for a in args if type(a) is OperationModel)
 
-            action = '{}:{}'.format(
-                model.metadata['endpointPrefix'],
-                model.name
-            )
+            if model:
+                action = '{}:{}'.format(
+                    model.metadata['endpointPrefix'],
+                    model.name
+                )
 
-            self.actions.add(action)
+                self.actions.add(action)
 
             return method(*args, **kwargs)
 
