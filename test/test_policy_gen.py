@@ -1,7 +1,7 @@
 import boto3
 import json
 from botocore.stub import Stubber
-from boto3_policy_gen.iam import PolicyGenerator
+from boto3_policygen.iam import PolicyGenerator
 from moto import mock_ec2
 
 class TestPolicyGen:
