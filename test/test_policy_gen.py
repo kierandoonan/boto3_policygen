@@ -18,10 +18,11 @@ class TestPolicyGen:
 
         stub.add_response('describe_instances', {}, {})
         stub.add_response('describe_images', {}, {})
-        stub.activate()
 
-        policy_gen = PolicyGenerator([ec2])
+        policy_gen = PolicyGenerator()
         policy_gen.record()
+
+        stub.activate()
 
         ec2.describe_instances()
         ec2.describe_images()
@@ -43,12 +44,12 @@ class TestPolicyGen:
         rds_stub.add_response('describe_db_instances', {}, {})
         s3_stub.add_response('list_buckets', {}, {})
 
+        policy_gen = PolicyGenerator()
+        policy_gen.record()
+
         ec2_stub.activate()
         rds_stub.activate()
         s3_stub.activate()
-
-        policy_gen = PolicyGenerator([ec2, rds, s3])
-        policy_gen.record()
 
         ec2.describe_instances()
         rds.describe_db_instances()
@@ -67,10 +68,10 @@ class TestPolicyGen:
         for i in range(10):
             stub.add_response('describe_instances', {}, {})
 
-        stub.activate()
-
-        policy_gen = PolicyGenerator([ec2])
+        policy_gen = PolicyGenerator()
         policy_gen.record()
+
+        stub.activate()
 
         for i in range(10):
             ec2.describe_instances()
