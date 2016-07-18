@@ -9,5 +9,6 @@ setup(
     author_email='kieran@doonan.net',
     license='MIT',
     packages=['boto3_policygen'],
-    install_requires=['boto3', 'botocore']
+    install_requires=['boto3', 'botocore'],
+    keywords=['boto', 'boto3', 'iam', 'policy']
 )
