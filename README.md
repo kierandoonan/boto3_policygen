@@ -2,7 +2,7 @@
 
 This module will record AWS API calls made by `boto3` / `botocore` and generate an `iam` policy that would allow a user to make those calls.
 
-## Installation
+## Setup
 
 Install via pip
 
