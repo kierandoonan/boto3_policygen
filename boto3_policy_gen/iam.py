@@ -33,11 +33,17 @@ class PolicyGenerator:
 
     def _event_wrapper(self, method):
         def wrapper_method(*args, **kwargs):
+            """ Looks for an OperationModel in the args and kwargs and if it is
+                found then it will add it as an action to PolicyGenerator
+            """
             model = kwargs.get('model')
 
             # If model isn't in kwargs, check for it in args
             if not model:
-                model = next(a for a in args if type(a) is OperationModel)
+                try:
+                    model = next(a for a in args if type(a) is OperationModel)
+                except StopIteration:
+                    pass  # No model found
 
             if model:
                 action = '{}:{}'.format(
