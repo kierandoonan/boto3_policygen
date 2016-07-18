@@ -1,21 +1,16 @@
 import json
+from botocore.stub import Stubber
 
 
 class PolicyGenerator:
-    def __init__(self, clients=[]):
-        self.actions = set()
-        self.clients = clients
 
-    def add_client(self, client):
-        self.clients.append(client)
+    def __init__(self):
+        self.actions = set()
 
     def record(self):
-        for client in self.clients:
-            client.meta.events.register_first(
-                'before-call.*.*',
-                self._get_response_handler,
-                id(self)
-            )
+        Stubber._get_response_handler = self._event_wrapper(
+            Stubber._get_response_handler
+        )
 
     def generate(self):
         policy = {
@@ -31,13 +26,19 @@ class PolicyGenerator:
 
         return json.dumps(policy)
 
-    def clear_actions(self):
-        self.actions = set()
+    def _event_wrapper(self, method):
+        def wrapper_method(*args, **kwargs):
+            model = kwargs.get('model')
+            if not model:
+                import pdb; pdb.set_trace()
 
-    def _get_response_handler(self, model, params, **kwargs):
-        action = '{}:{}'.format(
-            model.metadata['endpointPrefix'],
-            model.name
-        )
+            action = '{}:{}'.format(
+                model.metadata['endpointPrefix'],
+                model.name
+            )
 
-        self.actions.add(action)
+            self.actions.add(action)
+
+            return method(*args, **kwargs)
+
+        return wrapper_method
