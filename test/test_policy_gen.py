@@ -2,7 +2,7 @@ import boto3
 import json
 from botocore.stub import Stubber
 from boto3_policy_gen.iam import PolicyGenerator
-
+from moto import mock_ec2
 
 class TestPolicyGen:
 
@@ -75,6 +75,21 @@ class TestPolicyGen:
 
         for i in range(10):
             ec2.describe_instances()
+
+        policy = json.loads(policy_gen.generate())
+
+        assert len(policy['Statement'][0]['Action']) == 1
+        assert 'ec2:DescribeInstances' in policy['Statement'][0]['Action']
+
+    @mock_ec2
+    def test_policy_is_recorded_when_not_stubbed(self):
+        session = boto3.Session(region_name='eu-west-1')
+        ec2 = session.client('ec2')
+
+        policy_gen = PolicyGenerator()
+        policy_gen.record()
+
+        ec2.describe_instances()
 
         policy = json.loads(policy_gen.generate())
 
