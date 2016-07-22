@@ -81,6 +81,22 @@ class TestPolicyGen:
         assert len(policy['Statement'][0]['Action']) == 1
         assert 'ec2:DescribeInstances' in policy['Statement'][0]['Action']
 
+    def test_stub_can_be_activated_before_policy_gen(self):
+        ec2, stub = self.gen_client_and_stub('ec2')
+
+        stub.add_response('describe_instances', {}, {})
+        stub.activate()
+
+        policy_gen = PolicyGenerator()
+        policy_gen.record()
+
+        ec2.describe_instances()
+
+        policy = json.loads(policy_gen.generate())
+
+        assert len(policy['Statement'][0]['Action']) == 1
+        assert 'ec2:DescribeInstances' in policy['Statement'][0]['Action']
+
     @mock_ec2
     def test_policy_is_recorded_when_not_stubbed(self):
         session = boto3.Session(region_name='eu-west-1')
