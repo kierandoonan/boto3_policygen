@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='boto3_policygen',
-    version='0.1',
+    version='0.2',
     description='Generates policy documents from calls to boto3 / botocore',
     url='https://github.com/kierandoonan/boto3_policygen',
     download_url='https://github.com/kierandoonan/boto3_policygen/archive/0.1.tar.gz',
