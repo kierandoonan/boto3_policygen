@@ -1,7 +1,6 @@
 import json
-from botocore.stub import Stubber
-from botocore.endpoint import Endpoint
 from botocore.model import OperationModel
+from botocore.hooks import HierarchicalEmitter
 
 
 class PolicyGenerator:
@@ -10,12 +9,8 @@ class PolicyGenerator:
         self.actions = set()
 
     def record(self):
-        Stubber._get_response_handler = self._event_wrapper(
-            Stubber._get_response_handler
-        )
-
-        Endpoint.make_request = self._event_wrapper(
-            Endpoint.make_request
+        HierarchicalEmitter.emit_until_response = self._event_wrapper(
+            HierarchicalEmitter.emit_until_response
         )
 
     def generate(self):
