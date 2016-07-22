@@ -31,26 +31,4 @@ print policy_gen.generate()
 
 Only the actions section of the policy will be created, any extra conditions or resource constraints will have to be added manually.
 
-Recording should work when the API is stubbed with the `botocore.Stubber` class, the only condition is that `PolicyGenerator.record()` must be called before `Stubber.activate()`.
-
-i.e. This will work:
-```python
-ec2 = boto3.client('ec2')
-stub = Stubber(ec2)
-stub.add_response('describe_instances', {}, {})
-policy_gen = PolicyGenerator()
-
-policy_gen.record()
-stub.activate()
-```
-
-This won't work:
-```python
-ec2 = boto3.client('ec2')
-stub = Stubber(ec2)
-stub.add_response('describe_instances', {}, {})
-policy_gen = PolicyGenerator()
-
-stub.activate()
-policy_gen.record()
-```
+Recording should work when the API is stubbed or mocked (it's currently tested against `botocore.Stubber` and `moto` but should work with others).
