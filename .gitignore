@@ -1,2 +1,4 @@
 .venv/
 *.pyc
+boto3_policygen.egg-info/
+dist/
