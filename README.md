@@ -19,7 +19,7 @@ import boto3
 policy_gen = PolicyGenerator()  # Create a new policy generator
 policy_gen.record()
 
-# Call some AWS APIs form boto3
+# Call some AWS APIs from boto3
 ec2 = boto3.client('ec2')
 ec2.describe_instances()
 
